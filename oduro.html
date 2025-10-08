@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Familia — Family Tree & Contributions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f0f12; --card:#15161a; --card2:#1a1c21; --ink:#f3f5f9; --muted:#b6bcc9; --line:#24262d;
+    --accent:#79cfa6; --accent2:#7aa2f7; --danger:#e46666; --warn:#e7b95a; --ok:#69d18f;
+    --max:1100px; --r:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  a{color:var(--accent2);text-decoration:none}
+  .wrap{max-width:var(--max);margin:auto;padding:20px}
+  header{
+    position:sticky;top:0;background:linear-gradient(180deg, rgba(15,15,18,.9), rgba(15,15,18,.7));
+    backdrop-filter: blur(6px); z-index:10; border-bottom:1px solid var(--line)
+  }
+  .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 20px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:36px;height:36px;border-radius:10px;background:
+      conic-gradient(from 200deg at 60% 40%, var(--accent2), var(--accent), #c38ef3, var(--accent2));
+    box-shadow:0 0 0 3px #ffffff10}
+  .brand h1{font-size:18px;margin:0;letter-spacing:.4px}
+  .tabs{display:flex;flex-wrap:wrap;gap:6px}
+  .tabs a{padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+  .tabs a.active,.tabs a:hover{color:var(--ink);border-color:#ffffff28;background:#ffffff0a}
+  .hero{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;margin:28px 0 10px
+  }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .pad{padding:22px}
+  .hero .card{min-height:220px}
+  h2{margin:0 0 10px;font-size:22px}
+  p.lead{color:var(--muted);margin:.3rem 0 1rem;line-height:1.6}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+  .kpi{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi b{font-size:22px;display:block;margin-top:4px}
+  .grid{display:grid;gap:18px}
+  @media (min-width:900px){ .grid.cols-2{grid-template-columns:1fr 1fr} .grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .row{display:grid;gap:12px;grid-template-columns:repeat(12,1fr)}
+  .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3} .col-8{grid-column:span 8} .col-12{grid-column:span 12}
+  input,select,textarea{width:100%;background:#0e0f12;border:1px solid var(--line);color:var(--ink);
+    padding:12px 12px;border-radius:12px;outline:none}
+  textarea{min-height:84px;resize:vertical}
+  .help{color:var(--muted);font-size:12px;margin-top:-4px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;border:1px solid var(--line);
+    background:#ffffff08;color:var(--ink);cursor:pointer
+  }
+  .btn.primary{background:linear-gradient(180deg, #79cfa620, #79cfa610);border-color:#79cfa660}
+  .btn.warn{background:#e7b95a1a;border-color:#e7b95a55}
+  .btn.ghost{background:transparent}
+  .btn.danger{background:#e466661a;border-color:#e4666655}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .actions{display:flex;flex-wrap:wrap;gap:8px}
+  .section{margin:26px 0}
+  .section h3{margin:0 0 12px;font-size:18px;color:#e6e9f2}
+  .table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .table th,.table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left}
+  .table th{background:#ffffff08;color:#cdd3e1;font-weight:600}
+  .table tr:hover td{background:#ffffff05}
+  .chip{display:inline-flex;gap:6px;align-items:center;background:#ffffff10;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:12px}
+  .sum{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  /* Tree */
+  .tree{
+    overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card2);padding:16px;min-height:260px
+  }
+  .tree ul{padding-left:28px;position:relative;list-style:none;margin:0}
+  .tree ul:before{content:"";position:absolute;left:10px;top:0;bottom:0;border-left:1px dashed #ffffff30}
+  .tree li{position:relative;margin:.2rem 0 .4rem .4rem;padding-left:10px}
+  .tree li:before{content:"";position:absolute;left:-10px;top:12px;width:18px;border-top:1px dashed #ffffff30}
+  .node{
+    display:inline-flex;gap:8px;align-items:center;background:#0e0f12;border:1px solid var(--line);padding:8px 10px;border-radius:12px
+  }
+  .node .dot{width:8px;height:8px;border-radius:999px;background:var(--accent)}
+  .node .yrs{color:var(--muted);font-size:12px}
+  .badge{font-size:11px;border:1px solid var(--line);background:#ffffff06;padding:3px 8px;border-radius:999px;color:#cfd6e6}
+  .node .ops button{background:transparent;color:#cfd6e6;border:1px solid var(--line);padding:4px 8px;border-radius:8px;cursor:pointer}
+  .node .ops button:hover{background:#ffffff10}
+  .search{display:flex;gap:8px;align-items:center}
+  .pill{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#ffffff08}
+  /* Tags */
+  .flag{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--line)}
+  .flag.dues{background:#79cfa610;color:#a7e7c8}
+  .flag.contrib{background:#7aa2f710;color:#b4c9ff}
+  .flag.cash{background:#e7b95a14;color:#f3d991}
+  .flag.momo{background:#6ccca514;color:#a8efd9}
+  .flag.bank{background:#c38ef314;color:#e8d3fb}
+  .empty{padding:18px;background:#ffffff06;border:1px dashed #ffffff33;border-radius:14px;text-align:center;color:#c6ccda}
+  footer{padding:30px 0;color:#9aa3b7}
+  /* Print */
+  @media print{
+    header,.actions .btn,.tabs{display:none !important}
+    body{background:#fff;color:#000}
+    .card,.tree,.table,.kpi{box-shadow:none;border-color:#ddd}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>GYIMAH  <span style="color:#9fb4ff;font-weight:600">FAMILY</span></h1>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <a href="#overview" class="active">Overview</a>
+      <a href="#tree">Family Tree</a>
+      <a href="#add">Add Person</a>
+      <a href="#dues">Contributions</a>
+      <a href="#directory">Directory</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HERO / OVERVIEW -->
+  <section id="overview" class="hero">
+    <div class="card pad">
+      <h2>Family Archive & Contributions</h2>
+      <p class="lead">
+        Record your past and present lineage, keep a searchable directory, and track family
+        contributions and monthly dues — all in one place. Data stays safely on your device
+        and can be exported to share with relatives.
+      </p>
+      <div class="kpis" id="kpis">
+        <div class="kpi"><span>Total People</span><b id="kpiPeople">0</b><span class="help">Ancestors & descendants</span></div>
+        <div class="kpi"><span>Ledger Total</span><b id="kpiTotal">—</b><span class="help">All contributions</span></div>
+        <div class="kpi"><span>Active Year</span><b id="kpiYear"></b><span class="help">Newest entry</span></div>
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn primary" id="btnQuickAdd">Quick Add Person</button>
+        <button class="btn" id="btnQuickDues">Log Dues</button>
+        <button class="btn ghost" id="btnPrint">Print / Save PDF</button>
+      </div>
+    </div>
+    <div class="card pad">
+      <h2>Search</h2>
+      <div class="search">
+        <input id="search" class="pill" type="search" placeholder="Search by name, year, notes…" aria-label="Search people and ledger">
+        <button class="btn" id="btnSearchClear">Clear</button>
+      </div>
+      <div id="searchResult" class="section"></div>
+    </div>
+  </section>
+
+  <!-- FAMILY TREE -->
+  <section id="tree" class="section">
+    <div class="card pad">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3>Family Tree</h3>
+        <div class="actions">
+          <button class="btn" id="btnExpand">Expand all</button>
+          <button class="btn ghost" id="btnCollapse">Collapse all</button>
+        </div>
+      </div>
+      <div class="tree" id="treeContainer" role="tree" aria-label="Family Tree"></div>
+      <div class="help" style="margin-top:8px">Tip: Add parent on creation or edit later to position branches.</div>
+    </div>
+  </section>
+
+  <!-- ADD PERSON -->
+  <section id="add" class="section">
+    <div class="card pad">
+      <h3>Add / Edit Person</h3>
+      <form id="personForm" autocomplete="off">
+        <input type="hidden" id="personId">
+        <div class="row">
+          <div class="field col-6"><label for="fullName">Full Name</label><input id="fullName" required placeholder="e.g., Ama Owusu Mensah"></div>
+          <div class="field col-3"><label for="gender">Gender</label>
+            <select id="gender">
+              <option>Female</option><option>Male</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field col-3"><label for="generation">Generation</label>
+            <input id="generation" type="number" min="-10" max="20" value="0" placeholder="0 = present">
+            <div class="help">Negative = older generations; positive = younger</div>
+          </div>
+          <div class="field col-3"><label for="born">Year Born</label><input id="born" type="number" min="1600" max="9999" placeholder="1992"></div>
+          <div class="field col-3"><label for="died">Year Died</label><input id="died" type="number" min="1600" max="9999" placeholder="—"></div>
+          <div class="field col-6"><label for="parentId">Parent</label>
+            <select id="parentId"></select>
+            <div class="help">Optional. Select to place the person under a parent in the tree.</div>
+          </div>
+          <div class="field col-12"><label for="notes">Notes</label><textarea id="notes" placeholder="Stories, occupation, hometown, clan, achievements…"></textarea></div>
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn primary" type="submit">Save Person</button>
+          <button class="btn ghost" type="reset" id="btnResetPerson">Reset</button>
+          <button class="btn danger" type="button" id="btnDeletePerson" style="display:none">Delete</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- CONTRIBUTIONS -->
+  <section id="dues" class="section">
+    <div class="grid cols-2">
+      <div class="card pad">
+        <h3>Log Contribution / Dues</h3>
+        <form id="payForm" autocomplete="off">
+          <div class="row">
+            <div class="field col-8"><label for="payer">Payer</label>
+              <select id="payer"></select>
+            </div>
+            <div class="field col-4"><label for="amount">Amount</label>
+              <input id="amount" type="number" step="0.01" min="0">
+            </div>
+            <div class="field col-4"><label for="ptype">Type</label>
+              <select id="ptype">
+                <option value="dues">Monthly Dues</option>
+                <option value="contribution">Contribution</option>
+                <option value="donation">Donation</option>
+              </select>
+            </div>
+            <div class="field col-4"><label for="method">Method</label>
+              <select id="method">
+                <option>Mobile Money</option><option>Cash</option><option>Bank</option>
+              </select>
+            </div>
+            <div class="field col-4"><label for="pdate">Date</label>
+              <input id="pdate" type="date">
+            </div>
+            <div class="field col-12"><label for="pnote">Note</label><input id="pnote" placeholder="Purpose, reference, remarks…"></div>
+          </div>
+          <div class="actions" style="margin-top:12px">
+            <button class="btn primary" type="submit">Add Entry</button>
+            <button class="btn ghost" type="reset">Clear</button>
+          </div>
+        </form>
+      </div>
+      <div class="card pad">
+        <h3>Summary</h3>
+        <div class="sum" id="sumFlags"></div>
+        <div class="kpis" style="margin-top:8px">
+          <div class="kpi"><span>This Month</span><b id="sumMonth">—</b><span class="help" id="sumMonthCount"></span></div>
+          <div class="kpi"><span>This Year</span><b id="sumYear">—</b><span class="help" id="sumYearCount"></span></div>
+          <div class="kpi"><span>All-Time</span><b id="sumAll">—</b><span class="help" id="sumAllCount"></span></div>
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn" id="btnFilterDues">Only Dues</button>
+          <button class="btn" id="btnFilterContrib">Only Contributions</button>
+          <button class="btn ghost" id="btnFilterAll">Show All</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section card pad">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3>Ledger</h3>
+        <div class="actions">
+          <button class="btn ghost" id="btnExport">Export JSON</button>
+          <label class="btn">
+            Import JSON
+            <input id="importFile" type="file" accept="application/json" style="display:none">
+          </label>
+          <button class="btn danger" id="btnWipe">Wipe All (Danger)</button>
+        </div>
+      </div>
+      <div id="ledgerWrap"></div>
+    </div>
+  </section>
+
+  <!-- DIRECTORY -->
+  <section id="directory" class="section">
+    <div class="card pad">
+      <h3>People Directory</h3>
+      <div id="dirWrap"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" class="section">
+    <div class="grid cols-2">
+      <div class="card pad">
+        <h3>Preferences</h3>
+        <div class="row">
+          <div class="field col-6">
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <option value="GHS">GHS</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="NGN">NGN</option><option value="GBP">GBP</option>
+            </select>
+          </div>
+          <div class="field col-6">
+            <label for="monthlyDues">Monthly Dues (suggested)</label>
+            <input id="monthlyDues" type="number" min="0" step="0.01" placeholder="e.g., 20">
+          </div>
+          <div class="field col-12">
+            <label><input type="checkbox" id="showDeceased"> &nbsp;Show cross (†) for deceased</label>
+          </div>
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn primary" id="btnSavePrefs">Save Preferences</button>
+        </div>
+      </div>
+      <div class="card pad">
+        <h3>Utilities</h3>
+        <div class="actions">
+          <button class="btn" id="btnSeed">Load Sample Family</button>
+          <button class="btn warn" id="btnBackup">Download Backup</button>
+          <button class="btn ghost" id="btnRestore">Restore Backup</button>
+          <input id="restoreFile" type="file" accept="application/json" style="display:none">
+        </div>
+        <p class="help" style="margin-top:10px">
+          Backup includes people, ledger, and preferences in a single JSON file.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    Built with ❤️ for families — Your data stays on this device. Export to share.
+  </footer>
+</main>
+
+<script>
+/* --------------------- Storage & State --------------------- */
+const S = {
+  peopleKey:'familia_people_v1',
+  ledgerKey:'familia_ledger_v1',
+  prefsKey:'familia_prefs_v1'
+};
+let state = {
+  people: [],
+  ledger: [],
+  prefs: { currency:'GHS', monthlyDues:0, showDeceased:true }
+};
+const byId = id => document.getElementById(id);
+const fmtMoney = (n) => {
+  const cur = state.prefs.currency || 'GHS';
+  if (isNaN(n)) return '—';
+  return new Intl.NumberFormat(undefined,{style:'currency',currency:cur,maximumFractionDigits:2}).format(n);
+};
+const todayISO = () => new Date().toISOString().slice(0,10);
+const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+/* Load / Save */
+function loadAll(){
+  try{
+    state.people = JSON.parse(localStorage.getItem(S.peopleKey) || '[]');
+    state.ledger = JSON.parse(localStorage.getItem(S.ledgerKey) || '[]');
+    state.prefs  = Object.assign(state.prefs, JSON.parse(localStorage.getItem(S.prefsKey) || '{}'));
+  }catch(e){ console.warn('load', e); }
+}
+function saveAll(){
+  localStorage.setItem(S.peopleKey, JSON.stringify(state.people));
+  localStorage.setItem(S.ledgerKey, JSON.stringify(state.ledger));
+  localStorage.setItem(S.prefsKey,  JSON.stringify(state.prefs));
+}
+
+/* --------------------- Rendering Helpers --------------------- */
+function refreshAll(){
+  fillParentAndPayerSelects();
+  renderTree();
+  renderDirectory();
+  renderLedger();
+  renderKpis();
+  renderSummary();
+  hydratePrefsForm();
+}
+function renderKpis(){
+  byId('kpiPeople').textContent = state.people.length;
+  const total = state.ledger.reduce((s,x)=>s+Number(x.amount||0),0);
+  byId('kpiTotal').textContent = fmtMoney(total);
+  const ny = state.ledger.reduce((y,x)=>Math.max(y, new Date(x.date||Date.now()).getFullYear()), 0);
+  byId('kpiYear').textContent = ny || new Date().getFullYear();
+}
+
+/* --------------------- People: Selects & Directory --------------------- */
+function fillParentAndPayerSelects(){
+  const opts = ['<option value="">— None —</option>']
+    .concat(state.people
+      .slice().sort((a,b)=>a.fullName.localeCompare(b.fullName))
+      .map(p=>`<option value="${p.id}">${escapeHtml(p.fullName)}</option>`))
+    .join('');
+  byId('parentId').innerHTML = opts;
+  byId('payer').innerHTML = '<option value="">— Select —</option>' + state.people
+    .slice().sort((a,b)=>a.fullName.localeCompare(b.fullName))
+    .map(p=>`<option value="${p.id}">${escapeHtml(p.fullName)}</option>`).join('');
+}
+function renderDirectory(){
+  if (!state.people.length){ byId('dirWrap').innerHTML = `<div class="empty">No people yet. Add someone in “Add Person”.</div>`; return; }
+  const rows = state.people.slice()
+    .sort((a,b)=> (a.generation??0) - (b.generation??0) || a.fullName.localeCompare(b.fullName))
+    .map(p=>{
+      const parent = state.people.find(x=>x.id===p.parentId);
+      const yrs = [p.born||'', p.died||''].filter(Boolean).join('–');
+      const cross = state.prefs.showDeceased && p.died ? ' †' : '';
+      return `<tr>
+        <td><span class="chip">${escapeHtml(p.fullName)}${cross}</span></td>
+        <td>${p.gender||''}</td>
+        <td>${p.generation ?? 0}</td>
+        <td>${yrs||''}</td>
+        <td>${parent ? escapeHtml(parent.fullName) : ''}</td>
+        <td><button class="btn" onclick="editPerson('${p.id}')">Edit</button></td>
+      </tr>`;
+    }).join('');
+  byId('dirWrap').innerHTML = `
+    <table class="table">
+      <thead><tr><th>Name</th><th>Gender</th><th>Gen</th><th>Years</th><th>Parent</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+/* --------------------- Tree Rendering --------------------- */
+function renderTree(){
+  const roots = state.people.filter(p=>!p.parentId);
+  const byParent = new Map();
+  state.people.forEach(p=>{
+    const k = p.parentId || '__root__';
+    if(!byParent.has(k)) byParent.set(k,[]);
+    byParent.get(k).push(p);
+  });
+  for (const [k,v] of byParent) v.sort((a,b)=> (a.generation??0)-(b.generation??0) || a.fullName.localeCompare(b.fullName));
+
+  function nodeHtml(p){
+    const yrs = [p.born||'', p.died||''].filter(Boolean).join('–');
+    const cross = state.prefs.showDeceased && p.died ? ' †' : '';
+    return `<span class="node" role="treeitem" aria-label="${escapeHtml(p.fullName)}">
+        <span class="dot"></span>
+        <span><b>${escapeHtml(p.fullName)}${cross}</b> <span class="yrs">${yrs}</span>
+          <span class="badge">Gen ${p.generation??0}</span>
+        </span>
+        <span class="ops" style="margin-left:6px">
+          <button title="Add child" onclick="quickAddChild('${p.id}')">＋</button>
+          <button title="Edit" onclick="editPerson('${p.id}')">Edit</button>
+        </span>
+      </span>`;
+  }
+
+  function buildList(parentId){
+    const kids = byParent.get(parentId||'__root__') || [];
+    if (!kids.length) return '';
+    return `<ul>${kids.map(k => `<li>${nodeHtml(k)}${buildList(k.id)}</li>`).join('')}</ul>`;
+  }
+
+  const html = buildList(null);
+  byId('treeContainer').innerHTML = html || `<div class="empty">No tree yet. Add a person and optionally set a parent.</div>`;
+}
+function quickAddChild(parentId){
+  document.location.hash = '#add';
+  byId('parentId').value = parentId;
+  byId('fullName').focus();
+}
+
+/* --------------------- Forms: Person --------------------- */
+function clearPersonForm(){
+  byId('personId').value = '';
+  byId('personForm').reset();
+  byId('died').value = '';
+  byId('btnDeletePerson').style.display = 'none';
+}
+function editPerson(id){
+  const p = state.people.find(x=>x.id===id); if(!p) return;
+  document.location.hash = '#add';
+  byId('personId').value = p.id;
+  byId('fullName').value = p.fullName || '';
+  byId('gender').value = p.gender || 'Other';
+  byId('generation').value = p.generation ?? 0;
+  byId('born').value = p.born || '';
+  byId('died').value = p.died || '';
+  byId('parentId').value = p.parentId || '';
+  byId('notes').value = p.notes || '';
+  byId('btnDeletePerson').style.display = 'inline-flex';
+}
+byId('personForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const id = byId('personId').value || uid();
+  const item = {
+    id,
+    fullName: byId('fullName').value.trim(),
+    gender: byId('gender').value,
+    generation: Number(byId('generation').value || 0),
+    born: byId('born').value ? Number(byId('born').value) : null,
+    died: byId('died').value ? Number(byId('died').value) : null,
+    parentId: byId('parentId').value || null,
+    notes: byId('notes').value.trim()
+  };
+  if (!item.fullName){ alert('Name is required'); return; }
+  const idx = state.people.findIndex(x=>x.id===id);
+  if (idx>=0) state.people[idx]=item; else state.people.push(item);
+  saveAll(); refreshAll(); clearPersonForm();
+});
+byId('btnDeletePerson').addEventListener('click', ()=>{
+  const id = byId('personId').value;
+  if (!id) return;
+  const hasChildren = state.people.some(p=>p.parentId===id);
+  if (hasChildren && !confirm('This person has children in the tree. Deleting will orphan them. Continue?')) return;
+  state.people = state.people.filter(p=>p.id!==id);
+  // Orphan children: remove their parentId
+  state.people = state.people.map(p=> p.parentId===id ? {...p, parentId:null} : p);
+  // Also remove ledger entries linked to this person?
+  if (confirm('Also remove ledger entries for this person?')) {
+    state.ledger = state.ledger.filter(l=>l.payerId!==id);
+  }
+  saveAll(); refreshAll(); clearPersonForm();
+});
+byId('btnResetPerson').addEventListener('click', clearPersonForm);
+
+/* --------------------- Forms: Ledger --------------------- */
+byId('payForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const payerId = byId('payer').value;
+  const amount = Number(byId('amount').value || 0);
+  const type = byId('ptype').value;
+  const method = byId('method').value;
+  const date = byId('pdate').value || todayISO();
+  const note = byId('pnote').value.trim();
+  if (!payerId) return alert('Please select a payer.');
+  if (!(amount>0)) return alert('Please enter a valid amount.');
+  state.ledger.push({ id:uid(), payerId, amount, type, method, date, note });
+  saveAll(); renderLedger(); renderSummary(); renderKpis();
+  e.target.reset();
+});
+function renderLedger(filter='all'){
+  if (!state.ledger.length){ byId('ledgerWrap').innerHTML = `<div class="empty">No entries yet.</div>`; return; }
+  let LS = state.ledger.slice().sort((a,b)=> new Date(b.date)-new Date(a.date));
+  if (filter==='dues') LS = LS.filter(x=>x.type==='dues');
+  if (filter==='contrib') LS = LS.filter(x=>x.type!=='dues');
+  const rows = LS.map(l=>{
+    const p = state.people.find(x=>x.id===l.payerId);
+    const fType = l.type==='dues' ? '<span class="flag dues">Dues</span>' : '<span class="flag contrib">Contribution</span>';
+    const fMethod = l.method==='Cash' ? '<span class="flag cash">Cash</span>' :
+                    l.method==='Bank' ? '<span class="flag bank">Bank</span>' : '<span class="flag momo">MoMo</span>';
+    return `<tr>
+      <td>${new Date(l.date).toLocaleDateString()}</td>
+      <td>${p ? escapeHtml(p.fullName) : '—'}</td>
+      <td>${fmtMoney(l.amount)}</td>
+      <td>${fType}</td>
+      <td>${fMethod}</td>
+      <td>${escapeHtml(l.note||'')}</td>
+      <td><button class="btn" onclick="deleteLedger('${l.id}')">Delete</button></td>
+    </tr>`;
+  }).join('');
+  byId('ledgerWrap').innerHTML = `
+    <table class="table">
+      <thead><tr><th>Date</th><th>Payer</th><th>Amount</th><th>Type</th><th>Method</th><th>Note</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+function deleteLedger(id){
+  if (!confirm('Delete this entry?')) return;
+  state.ledger = state.ledger.filter(l=>l.id!==id);
+  saveAll(); renderLedger(); renderSummary(); renderKpis();
+}
+
+/* --------------------- Summary --------------------- */
+function renderSummary(){
+  const cur = new Date();
+  const y = cur.getFullYear(), m = cur.getMonth();
+  const month = state.ledger.filter(x=> {
+    const d = new Date(x.date||Date.now()); return d.getFullYear()===y && d.getMonth()===m;
+  });
+  const year = state.ledger.filter(x=> new Date(x.date||Date.now()).getFullYear()===y);
+  const sum = a => a.reduce((s,x)=>s+Number(x.amount||0),0);
+  byId('sumMonth').textContent = fmtMoney(sum(month));
+  byId('sumYear').textContent = fmtMoney(sum(year));
+  byId('sumAll').textContent = fmtMoney(sum(state.ledger));
+  byId('sumMonthCount').textContent = `${month.length} entries`;
+  byId('sumYearCount').textContent = `${year.length} entries`;
+  byId('sumAllCount').textContent = `${state.ledger.length} entries`;
+
+  const dues = state.ledger.filter(x=>x.type==='dues').length;
+  const contrib = state.ledger.length - dues;
+  byId('sumFlags').innerHTML = `
+    <span class="flag dues">Dues: ${dues}</span>
+    <span class="flag contrib">Contributions: ${contrib}</span>
+    <span class="flag ${state.prefs.monthlyDues>0?'cash':''}">Monthly target: ${fmtMoney(state.prefs.monthlyDues||0)}</span>
+  `;
+}
+
+/* --------------------- Search --------------------- */
+byId('search').addEventListener('input', handleSearch);
+byId('btnSearchClear').addEventListener('click', ()=>{
+  byId('search').value=''; handleSearch();
+});
+function handleSearch(){
+  const q = byId('search').value.trim().toLowerCase();
+  const box = byId('searchResult');
+  if (!q){ box.innerHTML=''; return; }
+  const people = state.people.filter(p =>
+    (p.fullName||'').toLowerCase().includes(q) ||
+    String(p.born||'').includes(q) || String(p.died||'').includes(q) ||
+    (p.notes||'').toLowerCase().includes(q)
+  );
+  const ledger = state.ledger.filter(l=>{
+    const p = state.people.find(x=>x.id===l.payerId);
+    return (p && p.fullName.toLowerCase().includes(q)) ||
+           (l.note||'').toLowerCase().includes(q) ||
+           String(l.amount).includes(q);
+  });
+  const pHtml = people.map(p=>`<li><span class="chip">${escapeHtml(p.fullName)}</span> <small class="help">Gen ${p.generation??0}, ${p.born||''}-${p.died||''}</small></li>`).join('');
+  const lHtml = ledger.map(l=>{
+    const p = state.people.find(x=>x.id===l.payerId);
+    return `<li>${new Date(l.date).toLocaleDateString()} — <b>${fmtMoney(l.amount)}</b> by ${p?escapeHtml(p.fullName):'—'} <span class="help">${escapeHtml(l.note||'')}</span></li>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="grid cols-2">
+      <div>
+        <h3>People</h3>
+        ${people.length? `<ul>${pHtml}</ul>` : `<div class="empty">No matches</div>`}
+      </div>
+      <div>
+        <h3>Ledger</h3>
+        ${ledger.length? `<ul>${lHtml}</ul>` : `<div class="empty">No matches</div>`}
+      </div>
+    </div>
+  `;
+}
+
+/* --------------------- Prefs / Backup --------------------- */
+function hydratePrefsForm(){
+  byId('currency').value = state.prefs.currency || 'GHS';
+  byId('monthlyDues').value = state.prefs.monthlyDues || '';
+  byId('showDeceased').checked = !!state.prefs.showDeceased;
+}
+byId('btnSavePrefs').addEventListener('click', ()=>{
+  state.prefs.currency = byId('currency').value;
+  state.prefs.monthlyDues = Number(byId('monthlyDues').value || 0);
+  state.prefs.showDeceased = byId('showDeceased').checked;
+  saveAll(); refreshAll();
+});
+byId('btnBackup').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `familia-backup-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+  a.click();
+});
+byId('btnRestore').addEventListener('click', ()=> byId('restoreFile').click());
+byId('restoreFile').addEventListener('change', (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=> {
+    try{
+      const obj = JSON.parse(r.result);
+      if (obj.people && obj.ledger && obj.prefs){
+        state.people = obj.people; state.ledger = obj.ledger; state.prefs = Object.assign(state.prefs, obj.prefs);
+        saveAll(); refreshAll();
+        alert('Backup restored.');
+      } else alert('Invalid backup file.');
+    } catch(err){ alert('Invalid JSON.'); }
+  };
+  r.readAsText(f);
+});
+
+/* --------------------- Export / Import (ledger only) --------------------- */
+byId('btnExport').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state.ledger,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `familia-ledger-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+});
+byId('importFile').addEventListener('change', (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=> {
+    try{
+      const arr = JSON.parse(r.result);
+      if (Array.isArray(arr)){
+        if (!confirm('Merge imported entries with your current ledger?')) return;
+        state.ledger = arr.concat(state.ledger);
+        saveAll(); renderLedger(); renderSummary(); renderKpis();
+      } else alert('Invalid ledger JSON.');
+    } catch(err){ alert('Invalid JSON.'); }
+  };
+  r.readAsText(f);
+});
+
+/* --------------------- Utilities --------------------- */
+byId('btnWipe').addEventListener('click', ()=>{
+  if (!confirm('This will delete ALL people and ledger records. Continue?')) return;
+  state.people=[]; state.ledger=[]; saveAll(); refreshAll();
+});
+byId('btnPrint').addEventListener('click', ()=> window.print());
+byId('btnQuickAdd').addEventListener('click', ()=>{
+  document.location.hash = '#add';
+  byId('fullName').focus();
+});
+byId('btnQuickDues').addEventListener('click', ()=>{
+  document.location.hash = '#dues';
+  byId('payer').focus();
+});
+byId('btnExpand').addEventListener('click', ()=>{
+  // as we render fully expanded by default, no-op; kept for future
+});
+byId('btnCollapse').addEventListener('click', ()=>{
+  // collapse to roots: re-render a truncated view
+  const roots = state.people.filter(p=>!p.parentId);
+  byId('treeContainer').innerHTML = `<ul>${roots.map(p=>`<li><span class="node"><span class="dot"></span><b>${escapeHtml(p.fullName)}</b></span></li>`).join('')}</ul>`;
+});
+
+/* --------------------- Seeding --------------------- */
+byId('btnSeed').addEventListener('click', ()=>{
+  if (state.people.length && !confirm('Seed sample data on top of existing?')) return;
+  const a = uid(), b = uid(), c = uid(), d = uid(), e = uid(), f = uid();
+  const samplePeople = [
+    {id:a, fullName:'Nana Kwaku Mensah', gender:'Male', generation:-2, born:1930, died:1999, parentId:null, notes:'Patriarch, farmer in Abetifi.'},
+    {id:b, fullName:'Esi Adwoa', gender:'Female', generation:-2, born:1934, died:2008, parentId:null, notes:'Matriarch, seamstress.'},
+    {id:c, fullName:'Kwame Mensah', gender:'Male', generation:-1, born:1958, parentId:a, notes:'Teacher; moved to Kumasi.'},
+    {id:d, fullName:'Akosua Mensima', gender:'Female', generation:-1, born:1960, parentId:b, notes:'Trader; choir leader.'},
+    {id:e, fullName:'Ama Owusu Mensah', gender:'Female', generation:0, born:1992, parentId:c, notes:'Software engineer.'},
+    {id:f, fullName:'Kojo Mensah', gender:'Male', generation:0, born:1995, parentId:d, notes:'Nurse.'},
+  ];
+  state.people = state.people.concat(samplePeople);
+  state.ledger.push(
+    {id:uid(), payerId:e, amount:50, type:'dues', method:'Mobile Money', date:todayISO(), note:'Sept dues'},
+    {id:uid(), payerId:f, amount:150, type:'contribution', method:'Cash', date:todayISO(), note:'Homecoming support'}
+  );
+  saveAll(); refreshAll();
+});
+
+/* --------------------- Filters --------------------- */
+byId('btnFilterDues').addEventListener('click', ()=> renderLedger('dues'));
+byId('btnFilterContrib').addEventListener('click', ()=> renderLedger('contrib'));
+byId('btnFilterAll').addEventListener('click', ()=> renderLedger('all'));
+
+/* --------------------- Export (Full) --------------------- */
+function exportFull(){
+  const payload = { people:state.people, ledger:state.ledger, prefs:state.prefs };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `familia-full-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+  a.click();
+}
+/* Escape HTML for safety */
+function escapeHtml(s=''){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* --------------------- Init --------------------- */
+function init(){
+  loadAll();
+  // hydrate date inputs defaults
+  byId('pdate').value = todayISO();
+  // nav active link handling
+  const links = document.querySelectorAll('.tabs a');
+  const setActive = () => {
+    links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===location.hash || (!location.hash && a.getAttribute('href')==='#overview')));
+  };
+  window.addEventListener('hashchange', setActive); setActive();
+
+  // export backup via keyboard: Ctrl/Cmd+S (prevent default)
+  window.addEventListener('keydown', (e)=>{
+    if ((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); exportFull(); }
+  });
+
+  refreshAll();
+}
+init();
+</script>
+</body>
+</html>
